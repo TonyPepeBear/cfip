@@ -7,36 +7,32 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ImagesModel.withInit("accountID", "Token"),
-      child: Center(
-        child: Consumer<ImagesModel>(
-          builder: (context, model, child) {
-            if (model.deliveryID.isEmpty || model.images.isEmpty) {
-              return Text(
-                  model.deliveryID.isEmpty ? "Empty" : model.deliveryID);
-            }
-            return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3),
-                itemCount: model.images.length + 0,
-                itemBuilder: (context, index) {
-                  if (index >= model.images.length) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text("Total"),
-                        Text(model.images.length.toString())
-                      ],
-                    );
-                  }
-                  return Image.network(
-                      "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
-                      fit: BoxFit.cover);
-                });
-          },
-        ),
+    return Center(
+      child: Consumer<ImagesModel>(
+        builder: (context, model, child) {
+          if (model.deliveryID.isEmpty || model.images.isEmpty) {
+            return Text(model.deliveryID.isEmpty ? "Empty" : model.deliveryID);
+          }
+          return GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3),
+              itemCount: model.images.length + 0,
+              itemBuilder: (context, index) {
+                if (index >= model.images.length) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text("Total"),
+                      Text(model.images.length.toString())
+                    ],
+                  );
+                }
+                return Image.network(
+                    "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
+                    fit: BoxFit.cover);
+              });
+        },
       ),
     );
   }
