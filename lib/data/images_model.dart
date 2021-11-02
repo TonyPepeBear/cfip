@@ -22,6 +22,8 @@ class ImagesModel extends ChangeNotifier {
 
   void reloadAllImages(String accountID, String token) async {
     List<CFImage> images = await getAllImages(accountID, token);
+    images.sort((a, b) =>
+        b.uploaded.millisecondsSinceEpoch - a.uploaded.millisecondsSinceEpoch);
     _images.clear();
     _images.addAll(images);
     notifyListeners();

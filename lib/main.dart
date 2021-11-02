@@ -38,8 +38,6 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Provider.of<ImagesModel>(context, listen: false).reloadAllImages("1db38a9bdb2d1b51b647a83a8fe53fdc", "qg97Kmed-UpeHzRYLw5mhog4g7WEZJ8Cd-W-c2pn");
-    // Provider.of<ImagesModel>(context, listen: false).reloadDeliverID("1db38a9bdb2d1b51b647a83a8fe53fdc", "qg97Kmed-UpeHzRYLw5mhog4g7WEZJ8Cd-W-c2pn");
     return ChangeNotifierProvider(
       create: (context) => ImagesModel.withInit("", ""),
       child: Center(
@@ -49,15 +47,25 @@ class MyHomePage extends StatelessWidget {
               return Text(
                   model.deliveryID.isEmpty ? "Empty" : model.deliveryID);
             }
-            return GridView.count(
-                crossAxisCount: 3,
-                children: model.images
-                    .map(
-                      (e) => Image.network(
-                          "https://imagedelivery.net/${model.deliveryID}/${e.id}/public",
-                          fit: BoxFit.cover),
-                    )
-                    .toList());
+            return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3),
+                itemCount: model.images.length + 1,
+                itemBuilder: (context, index) {
+                  if (index >= model.images.length) {
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text("Total"),
+                        Text(model.images.length.toString())
+                      ],
+                    );
+                  }
+                  return Image.network(
+                      "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
+                      fit: BoxFit.cover);
+                });
           },
         ),
       ),
