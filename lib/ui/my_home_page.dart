@@ -1,4 +1,6 @@
+import 'package:animations/animations.dart';
 import 'package:cfip/data/images_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -28,9 +30,27 @@ class MyHomePage extends StatelessWidget {
                     ],
                   );
                 }
-                return Image.network(
-                    "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
-                    fit: BoxFit.cover);
+                return OpenContainer(
+                  closedBuilder: (context, _) {
+                    return Image.network(
+                        "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
+                        fit: BoxFit.cover);
+                  },
+                  openBuilder: (context, _) {
+                    return Scaffold(
+                      appBar: AppBar(title: const Text("Cloudflare Images")),
+                      body: Center(
+                        child: Column(
+                          children: [
+                            Image.network(
+                                "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
+                                fit: BoxFit.contain),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
               });
         },
       ),
