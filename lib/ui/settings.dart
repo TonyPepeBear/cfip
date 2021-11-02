@@ -1,4 +1,3 @@
-import 'package:card_settings/card_settings.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -15,33 +14,40 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return CardSettings(children: <CardSettingsSection>[
-      CardSettingsSection(
-        header: CardSettingsHeader(
-          label: "Cloudflare Account Settings",
-        ),
-        children: <CardSettingsWidget>[
-          CardSettingsText(
-            icon: const Icon(Icons.account_circle),
-            label: "Account ID",
-            onChanged: (value) {
-              _accountIDInput = value;
-            },
+    return Padding(
+      padding: const EdgeInsets.all(30),
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              decoration: const InputDecoration(
+                  labelText: "Account ID", icon: Icon(Icons.account_circle)),
+              onChanged: (value) {
+                _accountIDInput = value;
+              },
+            ),
           ),
-          CardSettingsText(
-            icon: const Icon(Icons.vpn_key),
-            label: "Token",
-            onChanged: (value) {
-              _tokenInput = value;
-            },
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextFormField(
+              decoration: const InputDecoration(
+                  labelText: "Token", icon: Icon(Icons.vpn_key)),
+              onChanged: (value) {
+                _tokenInput = value;
+              },
+            ),
           ),
-          CardSettingsButton(
-              label: "Test Connection",
-              onPressed: () {
-                print("$_accountIDInput\n$_tokenInput");
-              })
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+                onPressed: () {
+                  // Todo test connection
+                },
+                child: const Text("Test Connection")),
+          ),
         ],
-      )
-    ]);
+      ),
+    );
   }
 }
