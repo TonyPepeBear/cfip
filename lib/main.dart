@@ -1,14 +1,31 @@
+import 'package:cfip/ui/settings.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'data/images_model.dart';
+import 'ui/my_home_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  int _page = 0;
+
+  Widget _getBodyPage() {
+    switch (_page) {
+      case 0:
+        return const MyHomePage();
+      case 1:
+        return SettingsPage();
+    }
+    return const MyHomePage();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,54 +38,35 @@ class MyApp extends StatelessWidget {
             appBar: AppBar(
               title: const Text("Cloudflare Images"),
             ),
-            drawer: Drawer(
-                child: ListView(
-              children: List.generate(
-                  3,
-                  (index) => ListTile(
-                        title: Text(index.toString()),
-                      )),
-            )),
-            body: const MyHomePage()));
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  const MyHomePage({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => ImagesModel.withInit("", ""),
-      child: Center(
-        child: Consumer<ImagesModel>(
-          builder: (context, model, child) {
-            if (model.deliveryID.isEmpty || model.images.isEmpty) {
-              return Text(
-                  model.deliveryID.isEmpty ? "Empty" : model.deliveryID);
-            }
-            return GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3),
-                itemCount: model.images.length + 1,
-                itemBuilder: (context, index) {
-                  if (index >= model.images.length) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text("Total"),
-                        Text(model.images.length.toString())
-                      ],
-                    );
-                  }
-                  return Image.network(
-                      "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
-                      fit: BoxFit.cover);
-                });
-          },
-        ),
-      ),
-    );
+            drawer: Builder(builder: (context) {
+              return Drawer(
+                  child: ListView(children: [
+                const DrawerHeader(
+                  decoration: BoxDecoration(color: Colors.orangeAccent),
+                  child: Text(""),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.home),
+                  title: const Text("Home"),
+                  onTap: () {
+                    setState(() {
+                      _page = 0;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.settings),
+                  title: const Text("Settings"),
+                  onTap: () {
+                    setState(() {
+                      _page = 1;
+                    });
+                    Navigator.pop(context);
+                  },
+                ),
+              ]));
+            }),
+            body: _getBodyPage()));
   }
 }
