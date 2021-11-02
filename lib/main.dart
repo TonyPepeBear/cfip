@@ -1,6 +1,7 @@
-import 'package:cfip/data/cfi_api.dart';
-import 'package:cfip/data/cfimage.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'data/images_model.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,28 +38,28 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: FutureBuilder<List<CFImage>>(
-        future: getAllImages("accountID", "token"),
-        builder: (context, snapshot) {
-          if (snapshot.hasError) {
-            return const Text("error!");
-          }
-          if (!snapshot.hasData) {
-            return const Text("Waiting");
-          }
-          var data = snapshot.data!;
-          data.sort((a, b) =>
-              b.uploaded.millisecondsSinceEpoch -
-              a.uploaded.millisecondsSinceEpoch);
-          return GridView.count(
-              crossAxisCount: 3,
-              children: data
-                  .map((e) => Image.network(
-                      "https://imagedelivery.net/url/${e.id}/public",
-                      fit: BoxFit.cover))
-                  .toList());
-        },
+    // Provider.of<ImagesModel>(context, listen: false).reloadAllImages("1db38a9bdb2d1b51b647a83a8fe53fdc", "qg97Kmed-UpeHzRYLw5mhog4g7WEZJ8Cd-W-c2pn");
+    // Provider.of<ImagesModel>(context, listen: false).reloadDeliverID("1db38a9bdb2d1b51b647a83a8fe53fdc", "qg97Kmed-UpeHzRYLw5mhog4g7WEZJ8Cd-W-c2pn");
+    return ChangeNotifierProvider(
+      create: (context) => ImagesModel.withInit("", ""),
+      child: Center(
+        child: Consumer<ImagesModel>(
+          builder: (context, model, child) {
+            if (model.deliveryID.isEmpty || model.images.isEmpty) {
+              return Text(
+                  model.deliveryID.isEmpty ? "Empty" : model.deliveryID);
+            }
+            return GridView.count(
+                crossAxisCount: 3,
+                children: model.images
+                    .map(
+                      (e) => Image.network(
+                          "https://imagedelivery.net/${model.deliveryID}/${e.id}/public",
+                          fit: BoxFit.cover),
+                    )
+                    .toList());
+          },
+        ),
       ),
     );
   }
