@@ -16,7 +16,7 @@ class MyHomePage extends StatelessWidget {
           return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3),
-              itemCount: model.images.length + 0,
+              itemCount: model.images.length + 1,
               itemBuilder: (context, index) {
                 if (index >= model.images.length) {
                   return Column(
