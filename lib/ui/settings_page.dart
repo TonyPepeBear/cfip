@@ -1,6 +1,8 @@
 import 'package:cfip/data/cfi_api.dart';
+import 'package:cfip/data/settings_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -20,6 +22,17 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.all(30),
       child: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: ElevatedButton(
+              // TODO Danger Button
+              onPressed: () {
+                Provider.of<SettingsModel>(context, listen: false)
+                    .clearSettings();
+              },
+              child: const Text("Clear Settings"),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
@@ -60,17 +73,18 @@ class _SettingsPageState extends State<SettingsPage> {
                 },
                 child: const Text("Test Connection")),
           ),
-          Visibility(
-            visible: _testSuccess,
-            child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: ElevatedButton(
-                  child: const Text("Apply"),
-                  onPressed: () {
-                    // TODO Apply
-                  },
-                )),
-          ),
+          Padding(
+              padding: const EdgeInsets.all(16),
+              child: ElevatedButton(
+                child: const Text("Apply"),
+                onPressed: _testSuccess
+                    ? () {
+                        Provider.of<SettingsModel>(context, listen: false)
+                            .updateAccountSettings(
+                                _accountIDInput, _tokenInput);
+                      }
+                    : null,
+              )),
         ],
       ),
     );

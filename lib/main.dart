@@ -1,8 +1,9 @@
 import 'package:cfip/data/images_model.dart';
-import 'package:cfip/ui/settings.dart';
+import 'package:cfip/ui/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'data/settings_model.dart';
 import 'ui/my_home_page.dart';
 
 void main() {
@@ -36,8 +37,11 @@ class _MyAppState extends State<MyApp> {
         theme: ThemeData(
           primarySwatch: Colors.orange,
         ),
-        home: ChangeNotifierProvider(
-          create: (context) => ImagesModel.withInit("accountID", "token"),
+        home: MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => ImagesModel()),
+            ChangeNotifierProvider(create: (context) => SettingsModel()),
+          ],
           child: Scaffold(
               appBar: AppBar(
                 title: const Text("Cloudflare Images"),

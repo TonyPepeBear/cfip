@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:cfip/data/images_model.dart';
+import 'package:cfip/data/settings_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,11 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SettingsModel settingsModel = Provider.of<SettingsModel>(context);
+    ImagesModel imagesModel = Provider.of<ImagesModel>(context);
+    settingsModel.addListener(() {
+      imagesModel.reloadAll(settingsModel.accountID, settingsModel.token);
+    });
     return Center(
       child: Consumer<ImagesModel>(
         builder: (context, model, child) {

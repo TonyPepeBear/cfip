@@ -11,16 +11,27 @@ class ImagesModel extends ChangeNotifier {
 
   UnmodifiableListView<CFImage> get images => UnmodifiableListView(_images);
 
+  String _deliveryID = "";
+
+  String get deliveryID => _deliveryID;
+
   ImagesModel();
 
-  ImagesModel.withInit(String accountID, String token) {
+  void reloadAll(String accountID, String token) {
+    if (accountID.isEmpty || token.isEmpty) {
+      _images.clear();
+      _deliveryID = "";
+      notifyListeners();
+    }
     reloadAllImages(accountID, token);
     reloadDeliverID(accountID, token);
   }
 
-  String deliveryID = "";
-
   void reloadAllImages(String accountID, String token) async {
+    if (accountID.isEmpty || token.isEmpty) {
+      _images.clear();
+      notifyListeners();
+    }
     List<CFImage> images = await getAllImages(accountID, token);
     images.sort((a, b) =>
         b.uploaded.millisecondsSinceEpoch - a.uploaded.millisecondsSinceEpoch);
@@ -30,7 +41,12 @@ class ImagesModel extends ChangeNotifier {
   }
 
   void reloadDeliverID(String accountID, String token) async {
-    deliveryID = await getDeliveryUrl(http.Client(), accountID, token);
+    if (accountID.isEmpty || token.isEmpty) {
+      _deliveryID = "";
+      notifyListeners();
+    }
+
+    _deliveryID = await getDeliveryUrl(http.Client(), accountID, token);
     await Future.delayed(const Duration(seconds: 3));
     notifyListeners();
   }
