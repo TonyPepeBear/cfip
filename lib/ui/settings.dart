@@ -12,6 +12,7 @@ class SettingsPage extends StatefulWidget {
 class _SettingsPageState extends State<SettingsPage> {
   String _accountIDInput = "";
   String _tokenInput = "";
+  bool _testSuccess = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,9 +51,25 @@ class _SettingsPageState extends State<SettingsPage> {
                     ScaffoldMessenger.of(context).hideCurrentSnackBar();
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text(value ? "Success" : "Connection Fail")));
+                    if (value) {
+                      setState(() {
+                        _testSuccess = value;
+                      });
+                    }
                   });
                 },
                 child: const Text("Test Connection")),
+          ),
+          Visibility(
+            visible: _testSuccess,
+            child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: ElevatedButton(
+                  child: const Text("Apply"),
+                  onPressed: () {
+                    // TODO Apply
+                  },
+                )),
           ),
         ],
       ),
