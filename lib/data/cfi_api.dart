@@ -44,3 +44,14 @@ Future<String> getDeliveryUrl(
   var v = (list[0]["variants"] as List)[0].toString();
   return exp.firstMatch(v)?.group(1) ?? "";
 }
+
+Future<bool> testConnection(
+    http.Client client, String accountID, String token) async {
+  var url = Uri.parse(
+      "https://api.cloudflare.com/client/v4/accounts/$accountID/images/v1?page=1&per_page=1");
+  var resp = await client.get(url, headers: {
+    "Authorization": "Bearer $token",
+  });
+  var json = jsonDecode(resp.body);
+  return json["success"] as bool;
+}

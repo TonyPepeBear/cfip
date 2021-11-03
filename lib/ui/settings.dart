@@ -1,4 +1,6 @@
+import 'package:cfip/data/cfi_api.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -9,7 +11,6 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   String _accountIDInput = "";
-
   String _tokenInput = "";
 
   @override
@@ -42,7 +43,14 @@ class _SettingsPageState extends State<SettingsPage> {
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
                 onPressed: () {
-                  // Todo test connection
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Testing Connection")));
+                  testConnection(http.Client(), _accountIDInput, _tokenInput)
+                      .then((value) {
+                    ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text(value ? "Success" : "Connection Fail")));
+                  });
                 },
                 child: const Text("Test Connection")),
           ),
