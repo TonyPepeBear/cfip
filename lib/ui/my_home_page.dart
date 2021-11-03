@@ -1,4 +1,5 @@
 import 'package:animations/animations.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cfip/data/images_model.dart';
 import 'package:cfip/data/settings_model.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,25 @@ class MyHomePage extends StatelessWidget {
       child: Consumer<ImagesModel>(
         builder: (context, model, child) {
           if (model.deliveryID.isEmpty || model.images.isEmpty) {
-            return Text(model.deliveryID.isEmpty ? "Empty" : model.deliveryID);
+            return const Padding(
+              padding: EdgeInsets.all(24.0),
+              child: Center(
+                  child: Card(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
+                  child: AutoSizeText(
+                    "Please check your settings.",
+                    style: TextStyle(
+                      fontSize: 200,
+                    ),
+                    maxLines: 1,
+                    minFontSize: 10,
+                    maxFontSize: double.infinity,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              )),
+            );
           }
           return GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

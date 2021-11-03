@@ -23,17 +23,6 @@ class _SettingsPageState extends State<SettingsPage> {
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.all(18),
-            child: ElevatedButton(
-              // TODO Danger Button
-              onPressed: () {
-                Provider.of<SettingsModel>(context, listen: false)
-                    .clearSettings();
-              },
-              child: const Text("Clear Settings"),
-            ),
-          ),
-          Padding(
             padding: const EdgeInsets.all(8.0),
             child: TextFormField(
               decoration: const InputDecoration(
@@ -85,6 +74,39 @@ class _SettingsPageState extends State<SettingsPage> {
                       }
                     : null,
               )),
+          const Spacer(flex: 1),
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateColor.resolveWith(
+                      (states) => Colors.redAccent)),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                          title: const Text("Clear All Settings?"),
+                          content: const Text("This action can NOT undo."),
+                          actions: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("No")),
+                            TextButton(
+                                onPressed: () {
+                                  Provider.of<SettingsModel>(context,
+                                          listen: false)
+                                      .clearSettings();
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("Yes")),
+                          ],
+                        ));
+              },
+              child: const Text("Clear Settings"),
+            ),
+          ),
         ],
       ),
     );
