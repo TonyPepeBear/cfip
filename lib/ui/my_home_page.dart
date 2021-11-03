@@ -1,5 +1,6 @@
 import 'package:animations/animations.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cfip/data/images_model.dart';
 import 'package:cfip/data/settings_model.dart';
 import 'package:flutter/material.dart';
@@ -57,8 +58,15 @@ class MyHomePage extends StatelessWidget {
                 }
                 return OpenContainer(
                   closedBuilder: (context, _) {
-                    return Image.network(
-                        "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
+                    return CachedNetworkImage(
+                        imageUrl:
+                            "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
+                        placeholder: (context, url) => const Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.error),
                         fit: BoxFit.cover);
                   },
                   openBuilder: (context, _) {
@@ -67,9 +75,14 @@ class MyHomePage extends StatelessWidget {
                       body: Center(
                         child: Column(
                           children: [
-                            Image.network(
-                                "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
-                                fit: BoxFit.contain),
+                            CachedNetworkImage(
+                                imageUrl:
+                                    "https://imagedelivery.net/${model.deliveryID}/${model.images[index].id}/public",
+                                placeholder: (context, url) =>
+                                    const CircularProgressIndicator(),
+                                errorWidget: (context, url, error) =>
+                                    const Icon(Icons.error),
+                                fit: BoxFit.contain)
                           ],
                         ),
                       ),
