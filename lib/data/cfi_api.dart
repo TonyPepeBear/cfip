@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'cfimage.dart';
@@ -7,7 +8,7 @@ import 'cfimage.dart';
 Future<String> fetchImageJson(
     http.Client client, String accountID, String token, int page) async {
   var url = Uri.parse(
-      "https://api.cloudflare.com/client/v4/accounts/$accountID/images/v1?page=$page&per_page=100");
+      "https://api.cloudflare.com/client/v4/accounts/$accountID/images/v1?page=$page&per_page=50");
   var resp = await client.get(url, headers: {
     "Authorization": "Bearer $token",
   });
@@ -25,9 +26,18 @@ List<CFImage> convertJsonToImageList(String json) {
 }
 
 Future<List<CFImage>> getAllImages(String accountID, String token) async {
-  // TODO all images
-  return convertJsonToImageList(
-      await fetchImageJson(http.Client(), accountID, token, 1));
+  List<CFImage> list = [];
+  int pageCount = 1;
+  var tempList = convertJsonToImageList(
+      await fetchImageJson(http.Client(), accountID, token, pageCount));
+  while (tempList.isNotEmpty) {
+    list.addAll(tempList);
+    tempList.clear();
+    pageCount++;
+    tempList = convertJsonToImageList(
+        await fetchImageJson(http.Client(), accountID, token, pageCount));
+  }
+  return list;
 }
 
 Future<String> getDeliveryUrl(
