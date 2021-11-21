@@ -16,6 +16,7 @@ jobs:
           channel: 'dev'
       - name: Build flutter
         run: |
+          flutter config --enable-windows-desktop
           flutter pub get
           flutter build windows
         
