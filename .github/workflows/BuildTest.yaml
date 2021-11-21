@@ -7,6 +7,7 @@ jobs:
   Release-Windows:
     runs-on: windows-latest
     steps:
+      - uses: actions/checkout@master
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v1.1
       - name: Setup flutter
