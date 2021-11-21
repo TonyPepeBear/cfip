@@ -5,9 +5,9 @@ on:
 name: Build Release
 jobs:
   Build-Windows-Release:
+    if: startsWith(github.ref, 'refs/tags/')
     runs-on: windows-latest
     steps:
-      if: startsWith(github.ref, 'refs/tags/')
       - uses: actions/checkout@master
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v1.1
