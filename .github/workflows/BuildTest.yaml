@@ -2,7 +2,7 @@ on:
   push:
     branches: [master]
 
-name: Build Release
+name: Build Test
 jobs:
   Build-Windows:
     runs-on: windows-latest
