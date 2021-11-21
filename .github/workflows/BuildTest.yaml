@@ -4,7 +4,7 @@ on:
 
 name: Build Release
 jobs:
-  Release Windows:
+  Release-Windows:
     runs-on: windows-latest
     steps:
       - name: Setup msbuild
