@@ -1,0 +1,22 @@
+on:
+  push:
+    branches: [master]
+
+name: Build Release
+jobs:
+  Release Windows:
+    runs-on: windows-latest
+    steps:
+      - name: Setup msbuild
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Setup flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'stable'
+      - name: Build flutter
+        run: |
+          flutter pub get
+          flutter build windows
+        
+
+
