@@ -30,66 +30,73 @@ class _SettingFragmentState extends State<SettingFragment> {
               String message = "";
 
               showDialog(
-                  context: context,
-                  builder: (context) {
-                    return StatefulBuilder(builder: (context, setState) {
-                      return AlertDialog(
-                          title: const Text("Login"),
-                          actions: [
-                            TextButton(
-                              child: const Text("Test"),
-                              onPressed: () async {
-                                setState(() {
-                                  message = "Please Wait";
-                                });
-                                if (await testAccountValid(accountID, token)) {
-                                  setState(() {
-                                    ok = true;
-                                    message = "Account Valid";
-                                  });
-                                } else {
-                                  setState(() {
-                                    ok = false;
-                                    message = "Account Invalid";
-                                  });
+                context: context,
+                builder: (context) {
+                  return StatefulBuilder(builder: (context, setState) {
+                    return AlertDialog(
+                      title: const Text("Login"),
+                      actions: [
+                        TextButton(
+                          child: const Text("Test"),
+                          onPressed: () async {
+                            setState(() {
+                              message = "Please Wait";
+                            });
+                            if (await testAccountValid(accountID, token)) {
+                              setState(() {
+                                ok = true;
+                                message = "Account Valid";
+                              });
+                            } else {
+                              setState(() {
+                                ok = false;
+                                message = "Account Invalid";
+                              });
+                            }
+                          },
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text("Cancle"),
+                        ),
+                        TextButton(
+                          onPressed: ok
+                              ? () {
+                                  Navigator.pop(context);
                                 }
-                              },
-                            ),
-                            TextButton(onPressed: () {}, child: Text("Cancle")),
-                            TextButton(
-                                onPressed: ok
-                                    ? () {
-                                        Navigator.pop(context);
-                                      }
-                                    : null,
-                                child: Text("Save")),
-                          ],
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              TextField(
-                                decoration:
-                                    InputDecoration(label: Text("AccountID")),
-                                onChanged: (s) {
-                                  setState(() {
-                                    accountID = s;
-                                  });
-                                },
-                              ),
-                              TextField(
-                                decoration:
-                                    InputDecoration(label: Text("Token")),
-                                onChanged: (s) {
-                                  setState(() {
-                                    token = s;
-                                  });
-                                },
-                              ),
-                              Text(message)
-                            ],
-                          ));
-                    });
+                              : null,
+                          child: const Text("Save"),
+                        ),
+                      ],
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          TextField(
+                            decoration:
+                                const InputDecoration(label: Text("AccountID")),
+                            onChanged: (s) {
+                              setState(() {
+                                accountID = s;
+                              });
+                            },
+                          ),
+                          TextField(
+                            decoration:
+                                const InputDecoration(label: Text("Token")),
+                            onChanged: (s) {
+                              setState(() {
+                                token = s;
+                              });
+                            },
+                          ),
+                          const SizedBox(height: 10),
+                          Text(message)
+                        ],
+                      ),
+                    );
                   });
+                },
+              );
             },
           )
         ],

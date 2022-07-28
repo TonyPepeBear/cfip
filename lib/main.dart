@@ -1,5 +1,7 @@
+import 'package:cfip/main_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:provider/provider.dart';
 
 import 'ui/home_page.dart';
 
@@ -13,14 +15,21 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      locale: const Locale('zh'),
+      // locale: const Locale('en'),
       title: 'CFIP',
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
         primarySwatch: MaterialColor(0xFFF5821F, themeColors),
       ),
-      home: const MyHomePage(),
+      home: MultiProvider(
+        providers: [
+          ChangeNotifierProvider<MainModel>(
+            create: (context) => MainModel(context),
+          ),
+        ],
+        child: const MyHomePage(),
+      ),
     );
   }
 }
