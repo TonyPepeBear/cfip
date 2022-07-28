@@ -1,5 +1,7 @@
 import 'package:cfip/cfi_utils.dart';
+import 'package:cfip/main_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 
 class SettingFragment extends StatefulWidget {
@@ -12,6 +14,7 @@ class SettingFragment extends StatefulWidget {
 class _SettingFragmentState extends State<SettingFragment> {
   @override
   Widget build(BuildContext context) {
+    var mainModel = context.read<MainModel>();
     return SettingsList(sections: [
       SettingsSection(
         title: Text(
@@ -56,12 +59,15 @@ class _SettingFragmentState extends State<SettingFragment> {
                           },
                         ),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                           child: const Text("Cancle"),
                         ),
                         TextButton(
                           onPressed: ok
                               ? () {
+                                  mainModel.saveLoginData(accountID, token);
                                   Navigator.pop(context);
                                 }
                               : null,

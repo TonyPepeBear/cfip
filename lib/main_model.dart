@@ -1,11 +1,47 @@
+import 'package:cfip/cfi_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainModel extends ChangeNotifier {
   final BuildContext context;
+  int loggedIn = 0; // -1: not logged in, 0: not define, 1: logged in
+  String accountID = "";
+  String token = "";
 
   String homeMessage = "Please wait...";
 
-  MainModel(this.context) {}
+  MainModel(this.context) {
+    SharedPreferences.getInstance().then((sp) {
+      var a = sp.getString("accountID");
+      var t = sp.getString("token");
+      if (a == null || t == null) {
+        loggedIn = -1;
+        accountID = a!;
+        token = t!;
+      } else {
+        loggedIn = 1;
+      }
+      notifyListeners();
+    });
+  }
 
-  List<String> imagesID = [];
+  List<String> images = [];
+
+  void saveLoginData(String accountID, String token) {
+    this.accountID = accountID;
+    this.token = token;
+    notifyListeners();
+    reloadAllImages();
+    SharedPreferences.getInstance().then((sp) {
+      sp.setString("accountID", accountID);
+      sp.setString("token", token);
+    });
+  }
+
+  void reloadAllImages() {
+    getAllImagesID(accountID, token).then((value) {
+      images = value;
+      notifyListeners();
+    });
+  }
 }
