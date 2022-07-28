@@ -15,11 +15,13 @@ class _HomeFragmentState extends State<HomeFragment> {
   Widget build(BuildContext context) {
     var local = AppLocalizations.of(context)!;
     var images = context.watch<MainModel>().images;
+    var accountID = context.watch<MainModel>().accountID;
+    var homeMessage = context.watch<MainModel>().homeMessage;
     return Center(
       child: ListView.builder(
         itemCount: images.length + 1,
         itemBuilder: (context, index) {
-          if (index == 0) return Text(images.length.toString());
+          if (index == 0) return Text("Logged in as $accountID\n$homeMessage");
           return Text(images[index]);
         },
       ),

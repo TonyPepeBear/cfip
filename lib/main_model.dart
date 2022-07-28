@@ -16,10 +16,12 @@ class MainModel extends ChangeNotifier {
       var t = sp.getString("token");
       if (a == null || t == null) {
         loggedIn = -1;
-        accountID = a!;
-        token = t!;
+        homeMessage = "Check settings!";
       } else {
         loggedIn = 1;
+        accountID = a;
+        token = t;
+        reloadAllImages();
       }
       notifyListeners();
     });
@@ -39,8 +41,11 @@ class MainModel extends ChangeNotifier {
   }
 
   void reloadAllImages() {
+    homeMessage = "Loading Images";
+    notifyListeners();
     getAllImagesID(accountID, token).then((value) {
       images = value;
+      homeMessage = "Total ${value.length}";
       notifyListeners();
     });
   }
