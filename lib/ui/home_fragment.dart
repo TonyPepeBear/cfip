@@ -11,21 +11,48 @@ class HomeFragment extends StatefulWidget {
 }
 
 class _HomeFragmentState extends State<HomeFragment> {
+  var listController = ScrollController();
+  int allowCount = 0;
+  void Function()? fetchMoreImages;
+
+  @override
+  void initState() {
+    listController.addListener(() {
+      if (listController.position.pixels >=
+          listController.position.maxScrollExtent) {
+        if (fetchMoreImages != null) {
+          print("get Image");
+          fetchMoreImages!();
+        }
+        ;
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    listController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    allowCount = context.watch<MainModel>().allowedCount;
+    fetchMoreImages = context.watch<MainModel>().fetchMoreImages;
     var local = AppLocalizations.of(context)!;
     var images = context.watch<MainModel>().images;
     var accountID = context.watch<MainModel>().accountID;
     var homeMessage = context.watch<MainModel>().homeMessage;
     return Center(
       child: GridView.builder(
-        itemCount: 4,
+        itemCount: images.length,
+        controller: listController,
         itemBuilder: (context, index) {
-          if (index == 0) return Text("Logged in as $accountID\n$homeMessage");
-          return Text("TODO");
+          return Image.network(context.read<MainModel>().getImageURL(index));
         },
         gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
       ),
     );
   }

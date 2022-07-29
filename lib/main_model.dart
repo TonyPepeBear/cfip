@@ -7,6 +7,10 @@ class MainModel extends ChangeNotifier {
   int loggedIn = 0; // -1: not logged in, 0: not define, 1: logged in
   String accountID = "";
   String token = "";
+  int currentCount = 0;
+  int allowedCount = 0;
+  bool isFetchingImages = false;
+  List<String> images = [];
   CloudflareImages cfi = CloudflareImages();
 
   String homeMessage = "Please wait...";
@@ -14,6 +18,8 @@ class MainModel extends ChangeNotifier {
   @override
   void notifyListeners() {
     loggedIn = cfi.getIsLogin() ? 1 : -1;
+    currentCount = cfi.currentCount;
+    allowedCount = cfi.allowedCount;
     super.notifyListeners();
   }
 
@@ -29,13 +35,20 @@ class MainModel extends ChangeNotifier {
         loggedIn = 1;
         accountID = a;
         token = t;
-        cfi.login(accountID, token);
+        cfi.login(accountID, token).then((value) => fetchMoreImages());
       }
       notifyListeners();
     });
   }
 
-  List<String> images = [];
+  void fetchMoreImages() async {
+    if (currentCount < images.length || isFetchingImages) return;
+    isFetchingImages = true;
+    var l = await cfi.getOnePageImage(images.length ~/ 50 + 1);
+    images.addAll(l);
+    isFetchingImages = false;
+    notifyListeners();
+  }
 
   void saveLoginData(String accountID, String token) {
     this.accountID = accountID;
@@ -46,6 +59,10 @@ class MainModel extends ChangeNotifier {
       sp.setString("accountID", accountID);
       sp.setString("token", token);
     });
+  }
+
+  String getImageURL(int index) {
+    return cfi.getImageURL(images[index], "preview");
   }
 
   void logout() {

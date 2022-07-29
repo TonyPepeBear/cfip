@@ -9,6 +9,7 @@ class CloudflareImages {
   bool _isLogin = false;
   int _currentCount = -1;
   int _allowedCount = -1;
+  List<String> _images = [];
   Function()? __notifyListeners;
 
   static Future<bool> validAccount(String accountID, String token) async {
@@ -22,7 +23,21 @@ class CloudflareImages {
     return false;
   }
 
-  void login(String accountID, String token) async {
+  static Future<String> getAccountHash(String accountID, String token) async {
+    var url = Uri.parse(
+        "https://api.cloudflare.com/client/v4/accounts/$accountID/images/v1?page=1&per_page=1");
+    var res = await http.get(url, headers: {"Authorization": "Bearer $token"});
+    var json = jsonDecode(res.body);
+    try {
+      return json["result"]["images"][0]["variants"][0]
+          .toString()
+          .replaceAll("https://imagedelivery.net/", "")
+          .split("/")[0];
+    } catch (e) {}
+    return "";
+  }
+
+  Future<void> login(String accountID, String token) async {
     var url = Uri.parse(
         "https://api.cloudflare.com/client/v4/accounts/$accountID/images/v1/stats");
     var res = await http.get(url, headers: {"Authorization": "Bearer $token"});
@@ -34,7 +49,8 @@ class CloudflareImages {
         _isLogin = true;
         _currentCount = json["result"]["count"]["current"];
         _allowedCount = json["result"]["count"]["allowed"];
-        __notifyListeners;
+        _accountHash = await getAccountHash(accountID, token);
+        _images = List.generate(_currentCount, (_) => "");
       }
     } catch (e) {
       _isLogin = false;
@@ -46,6 +62,10 @@ class CloudflareImages {
     __notifyListeners = f;
   }
 
+  int get currentCount => _currentCount;
+
+  int get allowedCount => _allowedCount;
+
   bool getIsLogin() {
     return _isLogin;
   }
@@ -56,13 +76,14 @@ class CloudflareImages {
     }
   }
 
-  String convert2ImageURL(String imageID, String accountHash, String variant) {
-    return "https://imagedelivery.net/$accountHash/$imageID/$variant";
+  String getImageURL(String imageID, String variant) {
+    return "https://imagedelivery.net/$_accountHash/$imageID/$variant";
   }
 
   Future<List<String>> getOnePageImage(int page) async {
+    if (!_isLogin) return List.empty();
     var url = Uri.parse(
-        "https://api.cloudflare.com/client/v4/accounts/$_accountID/images/v1?page=$page&per_page=100");
+        "https://api.cloudflare.com/client/v4/accounts/$_accountID/images/v1?page=$page&per_page=50");
     var res = await http.get(url, headers: {"Authorization": "Bearer $_token"});
     var json = jsonDecode(res.body);
     try {
