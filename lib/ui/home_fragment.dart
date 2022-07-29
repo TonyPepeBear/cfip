@@ -1,3 +1,4 @@
+import 'package:cfip/cfi_utils.dart' as cfi;
 import 'package:cfip/main_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -18,12 +19,16 @@ class _HomeFragmentState extends State<HomeFragment> {
     var accountID = context.watch<MainModel>().accountID;
     var homeMessage = context.watch<MainModel>().homeMessage;
     return Center(
-      child: ListView.builder(
-        itemCount: images.length + 1,
+      child: GridView.builder(
+        itemCount: 4,
         itemBuilder: (context, index) {
           if (index == 0) return Text("Logged in as $accountID\n$homeMessage");
-          return Text(images[index]);
+          return Image.network(
+            cfi.convert2ImageURL(images[index - 1], "", "public"),
+          );
         },
+        gridDelegate:
+            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
       ),
     );
   }
