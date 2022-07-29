@@ -1,4 +1,4 @@
-import 'package:cfip/cfi_utils.dart';
+import 'package:cfip/cloudflare_images.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -7,10 +7,18 @@ class MainModel extends ChangeNotifier {
   int loggedIn = 0; // -1: not logged in, 0: not define, 1: logged in
   String accountID = "";
   String token = "";
+  CloudflareImages cfi = CloudflareImages();
 
   String homeMessage = "Please wait...";
 
+  @override
+  void notifyListeners() {
+    loggedIn = cfi.getIsLogin() ? 1 : -1;
+    super.notifyListeners();
+  }
+
   MainModel(this.context) {
+    cfi.setNotifyListeners(notifyListeners);
     SharedPreferences.getInstance().then((sp) {
       var a = sp.getString("accountID");
       var t = sp.getString("token");
@@ -21,7 +29,7 @@ class MainModel extends ChangeNotifier {
         loggedIn = 1;
         accountID = a;
         token = t;
-        reloadAllImages();
+        cfi.login(accountID, token);
       }
       notifyListeners();
     });
@@ -32,21 +40,20 @@ class MainModel extends ChangeNotifier {
   void saveLoginData(String accountID, String token) {
     this.accountID = accountID;
     this.token = token;
+    cfi.login(accountID, token);
     notifyListeners();
-    reloadAllImages();
     SharedPreferences.getInstance().then((sp) {
       sp.setString("accountID", accountID);
       sp.setString("token", token);
     });
   }
 
-  void reloadAllImages() {
-    homeMessage = "Loading Images";
+  void logout() {
+    cfi = CloudflareImages();
+    cfi.setNotifyListeners(notifyListeners);
+    accountID = "";
+    token = "";
+    loggedIn = 0;
     notifyListeners();
-    getAllImagesID(accountID, token).then((value) {
-      images = value;
-      homeMessage = "Total ${value.length}";
-      notifyListeners();
-    });
   }
 }
