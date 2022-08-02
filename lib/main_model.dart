@@ -13,7 +13,6 @@ class MainModel extends ChangeNotifier {
   List<String> images = [];
   CloudflareImages cfi = CloudflareImages();
 
-  String homeMessage = "Please wait...";
 
   @override
   void notifyListeners() {
@@ -30,7 +29,6 @@ class MainModel extends ChangeNotifier {
       var t = sp.getString("token");
       if (a == null || t == null) {
         loggedIn = -1;
-        homeMessage = "Check settings!";
       } else {
         loggedIn = 1;
         accountID = a;

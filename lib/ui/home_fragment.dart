@@ -45,7 +45,6 @@ class _HomeFragmentState extends State<HomeFragment> {
     var mainModel = context.watch<MainModel>();
     var imageIDs = mainModel.images;
     var accountID = mainModel.accountID;
-    var homeMessage = mainModel.homeMessage;
     var loggedIn = mainModel.loggedIn;
     if (loggedIn == 0) {
       // Loading

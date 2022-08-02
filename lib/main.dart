@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'ui/home_page.dart';
+import 'ui/main_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
             create: (context) => MainModel(context),
           ),
         ],
-        child: const MyHomePage(),
+        child: const MainPage(),
       ),
     );
   }
