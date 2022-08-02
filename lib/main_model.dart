@@ -19,6 +19,9 @@ class MainModel extends ChangeNotifier {
     loggedIn = cfi.getIsLogin() ? 1 : -1;
     currentCount = cfi.currentCount;
     allowedCount = cfi.allowedCount;
+    if(cfi.getIsLogin()) {
+      fetchMoreImages();
+    }
     super.notifyListeners();
   }
 

@@ -25,7 +25,6 @@ class _HomeFragmentState extends State<HomeFragment> {
           print("get Image");
           fetchMoreImages!();
         }
-        ;
       }
     });
     super.initState();
