@@ -46,10 +46,6 @@ class _HomeFragmentState extends State<HomeFragment> {
     var imageIDs = mainModel.images;
     var accountID = mainModel.accountID;
     var loggedIn = mainModel.loggedIn;
-    if (loggedIn == 0) {
-      // Loading
-      return const Center(child: CircularProgressIndicator());
-    }
     if (loggedIn == -1) {
       // login fail
       return const Center(
@@ -63,7 +59,10 @@ class _HomeFragmentState extends State<HomeFragment> {
         itemBuilder: (context, index) {
           return CachedNetworkImage(
             imageUrl: mainModel.getImageURL(index),
-            placeholder: (context, url) => const CircularProgressIndicator(),
+            placeholder: (context, url) => const Padding(
+              padding: EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
+            ),
             errorWidget: (context, url, error) => const Icon(Icons.error),
           );
         },
