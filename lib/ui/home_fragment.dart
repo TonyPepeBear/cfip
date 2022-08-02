@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cfip/main_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -41,15 +42,31 @@ class _HomeFragmentState extends State<HomeFragment> {
     allowCount = context.watch<MainModel>().allowedCount;
     fetchMoreImages = context.watch<MainModel>().fetchMoreImages;
     var local = AppLocalizations.of(context)!;
-    var images = context.watch<MainModel>().images;
-    var accountID = context.watch<MainModel>().accountID;
-    var homeMessage = context.watch<MainModel>().homeMessage;
+    var mainModel = context.watch<MainModel>();
+    var imageIDs = mainModel.images;
+    var accountID = mainModel.accountID;
+    var homeMessage = mainModel.homeMessage;
+    var loggedIn = mainModel.loggedIn;
+    if (loggedIn == 0) {
+      // Loading
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (loggedIn == -1) {
+      // login fail
+      return const Center(
+        child: Text("Please check your settings"),
+      );
+    }
     return Center(
       child: GridView.builder(
-        itemCount: images.length,
+        itemCount: imageIDs.length,
         controller: listController,
         itemBuilder: (context, index) {
-          return Image.network(context.read<MainModel>().getImageURL(index));
+          return CachedNetworkImage(
+            imageUrl: mainModel.getImageURL(index),
+            placeholder: (context, url) => const CircularProgressIndicator(),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          );
         },
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
